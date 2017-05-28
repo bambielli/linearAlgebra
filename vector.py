@@ -2,7 +2,7 @@
 from math import sqrt, acos, degrees, pi
 from decimal import Decimal, getcontext
 
-getcontext().prec = 4
+getcontext().prec = 10
 
 class Vector(object):
     """ A Vector object
@@ -60,6 +60,7 @@ class Vector(object):
         """ returns the magnitude of the current vector
 
             magnitude is a value that indicates how much distance the vector covers
+            also referred to as the "length" of the vector
         """
         return Decimal(sqrt(sum(x**2 for x in self.coordinates)))
 
@@ -80,7 +81,7 @@ class Vector(object):
 
             dot product allows us to find the angle between two vectors
         """
-        return sum(x * y for x, y in zip(self.coordinates, vector.coordinates))
+        return Decimal(sum(x * y for x, y in zip(self.coordinates, vector.coordinates)))
 
     def angle(self, vector, in_degrees=False):
         """ returns the angle between the two vectors """
@@ -89,7 +90,6 @@ class Vector(object):
             norm_1 = self.normalize()
             norm_2 = vector.normalize()
             rad_val = acos(norm_1.dot(norm_2))
-            print(rad_val)
             if in_degrees:
                 return degrees(rad_val)
             else:
@@ -127,3 +127,60 @@ class Vector(object):
         """
 
         return self.magnitude() < tolerance
+
+    def projection(self, basis):
+        """ returns the projection of the vector on to the given basis vector """
+        try:
+            unit_b = basis.normalize()
+            scale = self.dot(unit_b)
+            return unit_b * scale
+        except ZeroDivisionError:
+            raise ZeroDivisionError("no component parallel to zero vector")
+
+    def orthogonal(self, basis):
+        """ returns the component of the vector orthogonal to the given basis vector """
+        try:
+            proj_v = Vector(self.projection(basis))
+            return self - proj_v
+        except ZeroDivisionError:
+            raise Exception("No component orthogonal to zero vector")
+
+    def cross(self, vector):
+        """ returns a vector that represents the cross product of the given vectors
+            Cross product is the vector that is orthogonal to both given vectors in 3d space
+        """
+        try:
+            x1, y1, z1 = self.coordinates
+            x2, y2, z2 = vector.coordinates
+            cross = [y1 * z2 - y2 * z1,
+                     -(x1 * z2 - x2 * z1),
+                     x1 * y2 - x2 * y1]
+            return Vector(cross)
+        except ValueError:
+            # msg = str(e)
+            # if msg == 'need more than 2 values to unpack':
+            #     self_in_3d = self
+            #     vector_in_3d = vector
+            #     if self.dimension == 2:
+            #         self_in_3d = Vector(self.coordinates + (0, ))
+            #     elif vector.dimension == 2:
+            #         vector_in_3d = Vector(vector.coordinates + (0, ))
+            #     self_in_3d.cross(vector_in_3d)
+            # if msg == 'too many values to unpack' or msg == 'need more than 1 value to unpack':
+            raise Exception("Cross product requires vectors in 3 dimensions")
+
+    def parallelogram(self, vector):
+        """ returns the area of the paralellogram that is created by the given vectors
+            This is calculated by taking the magnitude of the cross product of the given vectors
+        """
+
+        cross = self.cross(vector)
+        return cross.magnitude()
+
+    def triangle(self, vector):
+        """ returns the area of the triangle created by given vectors
+            This is calculated by taking 1/2 the magnitude of the cross product
+        """
+
+        cross = self.cross(vector)
+        return Decimal(0.5) * cross.magnitude()
