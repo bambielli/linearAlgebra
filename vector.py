@@ -1,5 +1,5 @@
 """ Vector - an object that defines a vector """
-import math
+from math import sqrt
 class Vector(object):
     """ A Vector object
 
@@ -30,8 +30,8 @@ class Vector(object):
         """ adds vector to the current vector
             mutates the current vector
         """
-        self.coordinates = tuple([
-            round(x + y, 3)
+        return tuple([
+            x + y
             for (x, y) in zip(self.coordinates, vector.coordinates)
         ])
 
@@ -40,8 +40,8 @@ class Vector(object):
         """ subtracts vector from the current vector
             mutates the current vector
         """
-        self.coordinates = tuple([
-            round(x - y, 3)
+        return tuple([
+            x - y
             for (x, y) in zip(self.coordinates, vector.coordinates)
         ])
 
@@ -49,18 +49,6 @@ class Vector(object):
         """ multiplies vector by scaling factor
             mutates the current vector
         """
-        if isinstance(other, Vector):
-            self.coordinates = tuple([
-                round(x * y, 3)
-                for (x, y) in zip(self.coordinates, other.coordinates)
-            ])
-        else:
-            self.coordinates = tuple([
-                round(other * x, 3)
-                for x in self.coordinates
-            ])
-    def multiply(self, other):
-        """ returns new vector """
         if isinstance(other, Vector):
             return tuple([
                 x * y
@@ -71,13 +59,14 @@ class Vector(object):
                 other * x
                 for x in self.coordinates
             ])
+
     def magnitude(self):
         """ returns the magnitude of the current vector """
-        return math.sqrt(math.fsum(x*x for x in self.coordinates))
+        return sqrt(sum(x * x for x in self.coordinates))
 
     def normalize(self):
         """ returns normalized vector for the current vector """
-
-        my_vec = Vector(self.multiply(1 / self.magnitude()))
-        print(sum(x*x for x in my_vec.coordinates))
-        return my_vec
+        try:
+            return Vector(self * (1./self.magnitude()))
+        except ZeroDivisionError:
+            raise Exception('Cannot normalize the zero vector')
