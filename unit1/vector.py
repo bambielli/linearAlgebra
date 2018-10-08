@@ -18,6 +18,7 @@ class Vector(object):
                 raise ValueError
             self.coordinates = tuple([Decimal(x) for x in coordinates])
             self.dimension = len(coordinates)
+            self.i = 0
 
         except ValueError:
             raise ValueError('The coordinates must be nonempty')
@@ -35,7 +36,7 @@ class Vector(object):
         """ adds vector to the current vector
             returns a new vector
         """
-        return tuple([
+        return Vector([
             x + y
             for (x, y) in zip(self.coordinates, vector.coordinates)])
 
@@ -44,7 +45,7 @@ class Vector(object):
         """ subtracts vector from the current vector
             returns a new vector
         """
-        return tuple([
+        return Vector([
             x - y
             for (x, y) in zip(self.coordinates, vector.coordinates)])
 
@@ -52,9 +53,23 @@ class Vector(object):
         """ multiplies vector by scaling factor
             returns a new vector
         """
-        return tuple([
+        return Vector([
             Decimal(scalar)*x
             for x in self.coordinates])
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.i < len(self.coordinates):
+            coord = self.coordinates[self.i]
+            self.i += 1
+            return coord
+        else:
+            raise StopIteration()
+    
+    def __getitem__(self, index):
+        return self.coordinates[index]
 
     def magnitude(self):
         """ returns the magnitude of the current vector
@@ -101,14 +116,6 @@ class Vector(object):
         """ returns a boolean indicating if the two vectors are parallel
             true when the vectors are scalar multiples of each other
         """
-        # try:
-        #     scalar_list = [
-        #         x / y
-        #         for x, y in zip(self.coordinates, vector.coordinates)
-        #     ]
-        #     return len(set(scalar_list)) == 1
-        # except ZeroDivisionError:
-        #     return True
         return (self.is_zero() or
                 vector.is_zero() or
                 self.angle(vector) == 0 or
@@ -157,16 +164,6 @@ class Vector(object):
                      x1 * y2 - x2 * y1]
             return Vector(cross)
         except ValueError:
-            # msg = str(e)
-            # if msg == 'need more than 2 values to unpack':
-            #     self_in_3d = self
-            #     vector_in_3d = vector
-            #     if self.dimension == 2:
-            #         self_in_3d = Vector(self.coordinates + (0, ))
-            #     elif vector.dimension == 2:
-            #         vector_in_3d = Vector(vector.coordinates + (0, ))
-            #     self_in_3d.cross(vector_in_3d)
-            # if msg == 'too many values to unpack' or msg == 'need more than 1 value to unpack':
             raise Exception("Cross product requires vectors in 3 dimensions")
 
     def parallelogram(self, vector):

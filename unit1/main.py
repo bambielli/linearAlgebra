@@ -17,19 +17,19 @@ SCALAR = 7.41
 # print(QUIZ_VECTOR_5 * SCALAR)
 
 TEST_VECTOR = Vector([3, 4])
-# print(TEST_VECTOR.magnitude())
+print(TEST_VECTOR.magnitude())
 
 MAG_QUIZ_1 = Vector([-0.221, 7.437])
 MAG_QUIZ_2 = Vector([8.813, -1.331, -6.247])
 
-# print(MAG_QUIZ_1.magnitude())
-# print(MAG_QUIZ_2.magnitude())
+print(MAG_QUIZ_1.magnitude())
+print(MAG_QUIZ_2.magnitude())
 
 MAG_QUIZ_3 = Vector([5.581, -2.136])
 MAG_QUIZ_4 = Vector([1.996, 3.108, -4.554])
 
-# print(MAG_QUIZ_3.normalize())
-# print(MAG_QUIZ_4.normalize())
+print(MAG_QUIZ_3.normalize())
+print(MAG_QUIZ_4.normalize())
 
 
 DOT_QUIZ_1A = Vector([7.887, 4.138])
@@ -86,12 +86,12 @@ PROJ_3B = Vector([6.404, -9.144, 2.759, 8.718])
 
 CROSS_1A = Vector([8.462, 7.893, -8.187])
 CROSS_1B = Vector([6.984, -5.975, 4.778])
-print(CROSS_1A.cross(CROSS_1B))
+# print(CROSS_1A.cross(CROSS_1B))
 
 CROSS_2A = Vector([-8.987, -9.838, 5.031])
 CROSS_2B = Vector([-4.268, -1.861, -8.866])
-print(CROSS_2A.parallelogram(CROSS_2B))
+# print(CROSS_2A.parallelogram(CROSS_2B))
 
 CROSS_3A = Vector([1.5, 9.547, 3.691])
 CROSS_3B = Vector([-6.007, 0.124, 5.772])
-print(CROSS_3A.triangle(CROSS_3B))
+# print(CROSS_3A.triangle(CROSS_3B))
